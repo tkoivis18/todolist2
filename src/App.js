@@ -1,23 +1,47 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import TodoTable from './TodoTable';
 import './App.css';
 
+const initialState = { description: '', date: '' };
+
 function App() {
+  const [todo, setTodo] = useState({ description: '', date: '' });
+  const [todos, setTodos] = useState([initialState]);
+
+  const inputChanged = (event) => {
+    setTodo({ ...todo, [event.target.name]: event.target.value });
+  };
+
+  const addTodo = () => {
+    setTodos([...todos, todo]);
+    setTodo({ description: '', date: '' });
+  };
+
+  const deleteTodo = (row) => {
+    setTodos(todos.filter((todo, index) => index !== row));
+  };
+
+  const clearTodo = () => {
+    setTodos([initialState]);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input
+        placeholder="Description"
+        name="description"
+        value={todo.description}
+        onChange={inputChanged}
+      />
+      <input
+        placeholder="Date"
+        name="date"
+        value={todo.date}
+        onChange={inputChanged}
+      />
+      <button onClick={addTodo}>Add</button>
+      <button onClick={clearTodo}>Clear</button>
+      <TodoTable todos={todos} deleteTodo={deleteTodo} />
     </div>
   );
 }
